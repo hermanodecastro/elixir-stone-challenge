@@ -12,7 +12,7 @@ struct Email {
 
 // This function checks whether the division is not exact. True if it is not an exact division, and False if it is.
 fn is_not_exact_division(list_total: &i32, amount_of_people: &i32) -> bool {
-	list_total % amount_of_people != 0
+	list_total.rem_euclid(*amount_of_people) != 0
 }
 
 // This function takes as arguments a vector of Item and a vector of Email and returns a HashMap on success or Error on failure. 
@@ -22,13 +22,10 @@ fn calculates(items: &Vec<Item>, emails: &Vec<Email>) -> Result<HashMap<String, 
 		return Err(String::from("List of emails or items is empty!"));
 	}
 
-	let mut list_total = 0;
 	let amount_of_people = emails.len() as i32;
 
 	// Calculates the total value of the list
-	for item in items {
-		list_total += item.quantity * item.unity_price;
-	} 
+	let list_total: i32 = items.iter().map(|item| item.quantity * item.unity_price).sum();
 
 	// Individual value as integer.
 	let personal_value = list_total / amount_of_people;
@@ -243,5 +240,3 @@ fn test_calculates_must_divide_in_25_25_25() {
 	assert_eq!(Some(&25), result.get("brena@hotmail.com"));
 	assert_eq!(Some(&25), result.get("lucas@gmail.com"));
 }
-
-
